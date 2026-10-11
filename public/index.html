@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>RationSaathi — Citizen Entitlement & Dispute Assistant</title>
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: #1e293b;
+      margin: 0;
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    /* Header & Navigation */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+    .brand-sub {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .user-profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f1f5f9;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 40px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      user-select: none;
+    }
+    .user-profile-badge:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .user-profile-badge:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .user-avatar-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #2563eb;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .btn-header-action {
+      font-size: 13px;
+      font-weight: 600;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      user-select: none;
+    }
+    .btn-header-action:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+      color: #0f172a;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.07);
+    }
+    .btn-header-action:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      background: #f1f5f9;
+    }
+    .status-pill {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      transition: all 0.2s ease;
+    }
+    .status-pill.offline {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fecaca;
+    }
+    .lang-dropdown {
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #1e293b;
+      min-height: 44px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      transition: all 0.15s ease;
+    }
+    .lang-dropdown:hover {
+      border-color: #94a3b8;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    }
+    .lang-dropdown:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    /* Wizard Stepper Tabs - Sticky Navigation */
+    .stepper {
+      display: flex;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+      transition: all 0.2s ease;
+    }
+    .step-item {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .step-item:hover {
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    .step-item:active {
+      transform: scale(0.98);
+    }
+    .step-item.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: #eff6ff;
+    }
+    .step-item.completed {
+      color: #166534;
+    }
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    label {
+      font-size: 14px;
+      font-weight: 600;
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      color: #334155;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+      min-height: 48px;
+    }
+    textarea {
+      min-height: 90px;
+    }
+    /* Buttons with 44px+ touch targets */
+    .btn {
+      min-height: 48px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--accent); color: white; width: 100%; }
+    .btn-success { background: var(--success); color: white; width: 100%; }
+    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+    .camera-zone {
+      border: 2px dashed #94a3b8;
+      border-radius: 12px;
+      padding: 32px 16px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .camera-zone:hover {
+      background: #f1f5f9;
+    }
+    /* Reconciled table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .disclaimer-box {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f8fafc;
+      border-left: 4px solid #64748b;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(3px);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 10000;
+      pointer-events: auto;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: #64748b;
+    }
+    .notification {
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+    .notification.success { background: #dcfce7; color: #166534; }
+    .notification.error { background: #fee2e2; color: #991b1b; }
+
+    /* Print & PDF Layout Styling */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+      }
+      .header, .stepper, #card-household, #step-panel-2, #card-airgap, .modal, .print\:hidden {
+        display: none !important;
+      }
+      #card-ledger {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      #discrepancy-report-container {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navbar -->
+    <div class="header">
+      <div>
+        <h1 class="brand-title" id="t-app-title">RationSaathi</h1>
+        <p class="brand-sub" id="t-app-subtitle">PDS Entitlement & Dispute Assistant</p>
+      </div>
+      <div class="header-actions">
+        <!-- Live Authenticated User Profile Pill -->
+        <div id="user-auth-badge" style="display: flex; align-items: center; gap: 8px;">
+          <button
+            type="button"
+            id="badge-demo-guest"
+            class="user-profile-badge"
+            onclick="openAuthModal()"
+            title="Click to Switch User / Account Details"
+          >
+            <span class="user-avatar-icon">👤</span>
+            <span id="current-user-display">Suresh Patil (HH-MUMBAI-04)</span>
+          </button>
+          <button
+            type="button"
+            id="btn-switch-user"
+            class="btn-header-action"
+            onclick="openAuthModal()"
+          >
+            Switch User / Login
+          </button>
+        </div>
+        <!-- Language Selector -->
+        <select id="lang-select" class="lang-dropdown">
+          <option value="en">English</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="mr">मराठी (Marathi)</option>
+        </select>
+        <!-- Online/Offline Status -->
+        <div id="network-status" class="status-pill">● Online Mode</div>
+      </div>
+    </div>
+
+    <!-- 3-Step Wizard Navigation -->
+    <div class="stepper">
+      <div class="step-item active" id="tab-step-1" onclick="switchStep(1)">
+        <span id="t-step1-tab">1. Setup</span>
+      </div>
+      <div class="step-item" id="tab-step-2" onclick="switchStep(2)">
+        <span id="t-step2-tab">2. Add Evidence</span>
+      </div>
+      <div class="step-item" id="tab-step-3" onclick="switchStep(3)">
+        <span id="t-step3-tab">3. Review & Save</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: SETUP -->
+    <div class="card" id="card-household">
+      <h2 id="t-step1-title">Step 1: Household Entitlement Setup</h2>
+      
+      <label id="t-household-id">Household ID</label>
+      <input type="text" id="household-id" value="HH-MUMBAI-04" />
+
+      <label id="t-head-name">Head of Family</label>
+      <input type="text" id="head-name" value="Suresh Patil" readonly style="background:#f8fafc;" />
+
+      <label id="t-family-size">Number of Family Members in Ration Card</label>
+      <input type="number" id="family-count" value="4" min="1" max="25" />
+
+      <label id="t-scheme-name" for="scheme-select">Entitlement Scheme (Loaded from Database)</label>
+      <select id="scheme-select" style="margin-bottom: 10px; font-weight: 600;">
+        <option value="NFSA">NFSA (Priority Household — 5.00 kg Wheat, 3.00 kg Rice)</option>
+        <option value="PMGKAY">PMGKAY (Free Grain — 7.00 kg Wheat, 5.00 kg Rice)</option>
+        <option value="AAY">Antyodaya Anna Yojana (AAY — 8.75 kg Wheat, 6.25 kg Rice)</option>
+        <option value="ANNAPURNA">State Annapurna Scheme (6.00 kg Wheat, 2.00 kg Dal)</option>
+      </select>
+
+      <label id="t-scheme-quota-label">Current Scheme Quota Rate</label>
+      <input type="text" id="rule-quota" value="5.00 kg Wheat / member" readonly style="background:#f8fafc; font-weight: 600; color: #1e3a8a;" />
+
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 16px; border-radius: 8px; margin-top: 18px;">
+        <div style="font-size: 13px; color: #1e40af;" id="t-total-entitlement">Total Expected Baseline Entitlement:</div>
+        <div style="font-size: 24px; font-weight: 700; color: #1e3a8a; margin-top: 4px;" id="display-expected-baseline">
+          20.00 kg
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="switchStep(2)" style="margin-top: 20px;">
+        <span id="t-btn-continue">Continue to Add Receipt →</span>
+      </button>
+    </div>
+
+    <!-- STEP 2: ADD EVIDENCE -->
+    <div class="card" id="step-panel-2">
+      <h2 id="t-step2-title">Step 2: Add Receipt Evidence</h2>
+      <p style="font-size: 14px; color: #64748b; margin-top: -8px; margin-bottom: 18px;">
+        Choose how you would like to proceed: upload/scan a physical receipt or continue directly to update your received items.
+      </p>
+
+      <!-- Choice Selection: Upload Evidence vs Continue Direct -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <button
+          type="button"
+          id="btn-choice-with-evidence"
+          onclick="toggleEvidenceMode(true)"
+          style="padding: 14px; border-radius: 10px; border: 2px solid #2563eb; background: #eff6ff; color: #1e40af; font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; transition: all 0.2s;"
+        >
+          📷 Add Receipt Evidence
+        </button>
+        <button
+          type="button"
+          id="btn-choice-skip-evidence"
+          onclick="toggleEvidenceMode(false)"
+          style="padding: 14px; border-radius: 10px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-weight: 600; font-size: 14px; cursor: pointer; text-align: center; transition: all 0.2s;"
+        >
+          ⚡ Continue Without Receipt
+        </button>
+      </div>
+
+      <!-- Container for Upload & OCR (Collapsible based on user choice) -->
+      <div id="evidence-upload-section">
+        <div class="camera-zone" onclick="document.getElementById('file-receipt').click()">
+          <div style="font-size: 40px; margin-bottom: 8px;">📷</div>
+          <div style="font-size: 16px; font-weight: 600; color: #0f172a;" id="t-camera-btn">
+            Take Photo / Select Receipt
+          </div>
+          <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
+            Tap here to capture or browse file
+          </div>
+          <input type="file" id="file-receipt" accept="image/*" style="display:none;" onchange="handleFileSelected(event)" />
+        </div>
+
+        <label id="t-paste-text">Or Review Pasted Receipt Text (AI OCR):</label>
+        <textarea id="raw-ocr-input" rows="3">Fair Price Shop Visit
+Date: 2026-10-04
+Wheat: 8.00 kg</textarea>
+
+        <button type="button" class="btn btn-secondary" id="btn-parse-receipt" style="width: 100%; margin-top: 8px;">
+          🔍 <span id="t-scan-receipt">Parse Receipt (AI OCR)</span>
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="switchStep(1)">
+          ← <span id="t-btn-back">Back</span>
+        </button>
+        <button type="button" class="btn btn-primary" style="flex: 2;" onclick="switchStep(3)">
+          <span id="t-btn-review">Review Candidate Data →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: REVIEW & AIR-GAP SAVE -->
+    <div class="card" id="card-airgap">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="t-step3-title" style="margin: 0;">Step 3: Review & Verify Details</h2>
+        <span class="badge" style="background: #fef3c7; color: #92400e;">Air-Gap Gate</span>
+      </div>
+
+      <label id="t-receipt-date">Receipt / Distribution Date</label>
+      <input type="date" id="verified-date" value="2026-10-04" />
+
+      <!-- Item Selection Dropdown populated dynamically from chosen Scheme -->
+      <label id="t-item-name" for="verified-item-select">Select Commodity to Update (from Selected Scheme)</label>
+      <select id="verified-item-select" onchange="handleCommoditySelectChange()" style="font-weight: 600; margin-bottom: 8px;">
+        <option value="Wheat">Wheat</option>
+        <option value="Rice">Rice</option>
+      </select>
+
+      <!-- Hidden or custom commodity name input that keeps full backwards compatibility with all tests -->
+      <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+        <span style="font-size: 13px; color: #64748b;">Or custom commodity:</span>
+        <input type="text" id="verified-item" value="Wheat" style="flex: 1; min-height: 38px; padding: 6px 10px; font-size: 14px;" oninput="syncCommoditySelectWithCustomInput()" />
+      </div>
+
+      <label id="t-quantity-received">Quantity Received</label>
+      <input type="number" step="any" id="verified-qty" value="8.00" />
+
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; margin-top: 18px; display: flex; align-items: flex-start; gap: 12px;">
+        <input type="checkbox" id="user-verified-checkbox" style="width: 20px; height: 20px; margin-top: 2px; cursor: pointer;" />
+        <label for="user-verified-checkbox" style="margin: 0; font-size: 13px; font-weight: 600; cursor: pointer;" id="t-explicit-confirm">
+          I explicitly confirm this data matches the physical receipt (user_verified = true)
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="switchStep(2)">
+          ← Back
+        </button>
+        <button type="button" class="btn btn-success" id="btn-submit-receipt" style="flex: 2;">
+          ✓ <span id="t-save-to-ledger">Confirm & Save to Ledger</span>
+        </button>
+      </div>
+
+      <div id="receipt-message"></div>
+    </div>
+
+    <!-- DISCREPANCY RECONCILIATION TABLE & REPORT CONTAINER -->
+    <div class="card" id="card-ledger">
+      <div id="discrepancy-report-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+          <h2 id="t-reconciliation-title" style="margin: 0;">Entitlement & Delivery Ledger — October 2026</h2>
+          <!-- Report Action Buttons (Hidden during print) -->
+          <div class="print:hidden" style="display: flex; gap: 8px;">
+            <button
+              type="button"
+              id="btn-download-pdf"
+              onclick="handleDownloadPDF()"
+              class="btn btn-secondary"
+              style="min-height: 40px; padding: 6px 12px; font-size: 13px;"
+            >
+              📥 Download PDF Report
+            </button>
+            <button
+              type="button"
+              id="btn-print-report"
+              onclick="window.print()"
+              class="btn btn-secondary"
+              style="min-height: 40px; padding: 6px 12px; font-size: 13px;"
+            >
+              🖨️ Print Report
+            </button>
+          </div>
+        </div>
+        <div style="font-size: 13px; color: #64748b; margin-bottom: 12px;">
+          Audited line-by-line reconciliation comparing verified deliveries against baseline entitlement.
+        </div>
+
+      <table id="discrepancy-table">
+        <thead>
+          <tr>
+            <th>Item Description</th>
+            <th>Allocated Entitlement</th>
+            <th>Documented Goods Received</th>
+            <th>Recorded Difference</th>
+            <th>Status</th>
+            <th>Evidence Reference</th>
+          </tr>
+        </thead>
+        <tbody id="discrepancy-tbody">
+          <!-- Populated by JavaScript -->
+        </tbody>
+      </table>
+
+      <div class="disclaimer-box" id="neutral-disclaimer">
+        <strong>Administrative Notice:</strong> This document is an administrative reconciliation report. Differences may occur due to stock shortages, delivery delays, unrecorded visits, or documentation errors.
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIXED VALIDATION MODAL (Backdrop Click, Escape Key, and 'X' Button) -->
+  <div class="modal" id="modal-airgap-violation" role="dialog" aria-modal="true" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button type="button" class="modal-close-btn" aria-label="Close" onclick="closeModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span style="font-size: 26px;">🛡️</span>
+        <h3 style="margin: 0; color: #dc2626;" id="t-modal-title">Explicit User Confirmation Required</h3>
+      </div>
+      <p style="font-size: 14px; color: #334155; line-height: 1.6;" id="t-modal-desc">
+        Air-Gap Protection: AI-extracted candidate data cannot enter the database ledger without your explicit manual verification. Please check the confirmation box before saving.
+      </p>
+      <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()" style="min-height: 44px; padding: 10px 18px; width: auto;" id="t-modal-close-btn">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION & NEW USER SIGN-IN MODAL -->
+  <div class="modal" id="modal-user-auth" role="dialog" aria-modal="true" onclick="if(event.target===this)closeAuthModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button type="button" class="modal-auth-close-btn modal-close-btn-auth" aria-label="Close" onclick="closeAuthModal()" style="position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: #64748b;">✕</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+        <span style="font-size: 26px;">🔐</span>
+        <h3 style="margin: 0; color: var(--primary);">Beneficiary Authentication</h3>
+      </div>
+      <p style="font-size: 13px; color: #64748b; margin-top: 4px; margin-bottom: 16px;">
+        Sign in or register a new user account. Your household data and ledger entries will be linked to your account.
+      </p>
+
+      <form id="form-auth-user" onsubmit="handleUserAuthSubmit(event)">
+        <label for="auth-email" style="margin-top: 6px;">Email Address or Beneficiary ID *</label>
+        <input type="text" id="auth-email" placeholder="e.g. priya.sharma@example.com or HH-NEW-99" required />
+
+        <label for="auth-name">Head of Family Name</label>
+        <input type="text" id="auth-name" placeholder="e.g. Priya Sharma" />
+
+        <div style="display: flex; gap: 12px;">
+          <div style="flex: 1;">
+            <label for="auth-household-id">Household ID</label>
+            <input type="text" id="auth-household-id" placeholder="e.g. HH-PUNE-07" />
+          </div>
+          <div style="flex: 1;">
+            <label for="auth-family-count">Family Members</label>
+            <input type="number" id="auth-family-count" value="4" min="1" max="25" />
+          </div>
+        </div>
+
+        <div id="auth-modal-message" style="margin-top: 10px;"></div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAuthModal()" style="flex: 1;">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="btn-submit-auth" style="flex: 2;">
+            Authenticate / Register →
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Translations Cache
+    const translations = {
+      en: null,
+      hi: null,
+      mr: null
+    };
+
+    let currentLang = 'en';
+    let ledger = [];
+    let dbInstance = null;
+
+    // Load translations
+    async function loadTranslations(lang) {
+      if (!translations[lang]) {
+        try {
+          const res = await fetch(`/locales/${lang}.json`);
+          if (res.ok) {
+            translations[lang] = await res.json();
+          }
+        } catch (e) {
+          console.warn('Locale load failed', e);
+        }
+      }
+      currentLang = lang;
+      applyTranslations();
+    }
+
+    function applyTranslations() {
+      const t = translations[currentLang];
+      if (!t) return;
+
+      const setTxt = (id, key) => {
+        const el = document.getElementById(id);
+        if (el && t[key]) el.textContent = t[key];
+      };
+
+      setTxt('t-app-title', 'app_title');
+      setTxt('t-app-subtitle', 'app_subtitle');
+      setTxt('t-step1-tab', t['step1_tab'] ? 'step1_tab' : 'step1_title');
+      setTxt('t-step2-tab', t['step2_tab'] ? 'step2_tab' : 'step2_title');
+      setTxt('t-step3-tab', t['step3_tab'] ? 'step3_tab' : 'step3_title');
+      setTxt('t-step1-title', 'step1_title');
+      setTxt('t-step2-title', 'step2_title');
+      setTxt('t-step3-title', 'step3_title');
+      setTxt('t-family-size', 'family_size');
+      setTxt('t-scheme-name', 'scheme_name');
+      setTxt('t-total-entitlement', 'total_entitlement');
+      setTxt('t-camera-btn', 'camera_btn');
+      setTxt('t-paste-text', 'paste_text');
+      setTxt('t-scan-receipt', 'scan_receipt');
+      setTxt('t-receipt-date', 'receipt_date');
+      setTxt('t-item-name', 'item_name');
+      setTxt('t-quantity-received', 'quantity_received');
+      setTxt('t-explicit-confirm', 'explicit_confirm_label');
+      setTxt('t-save-to-ledger', 'save_to_ledger');
+      setTxt('t-reconciliation-title', 'reconciliation_title');
+      setTxt('t-modal-title', 'modal_title');
+      setTxt('t-modal-desc', 'modal_desc');
+      setTxt('t-modal-close-btn', 'close_btn');
+    }
+
+    document.getElementById('lang-select').addEventListener('change', (e) => {
+      loadTranslations(e.target.value);
+    });
+
+    // Step Switcher - Smooth scroll to step card while keeping full DOM accessible
+    function switchStep(stepNum) {
+      const targetId = stepNum === 1 ? 'card-household' : (stepNum === 2 ? 'step-panel-2' : 'card-airgap');
+      const targetEl = document.getElementById(targetId);
+      if (targetEl && targetEl.scrollIntoView) {
+        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      for (let i = 1; i <= 3; i++) {
+        const tab = document.getElementById(`tab-step-${i}`);
+        if (tab) {
+          if (i === stepNum) {
+            tab.className = 'step-item active';
+          } else if (i < stepNum) {
+            tab.className = 'step-item completed';
+          } else {
+            tab.className = 'step-item';
+          }
+        }
+      }
+    }
+
+    // Active User State
+    let currentUser = {
+      id: 'usr_suresh_patil',
+      name: 'Suresh Patil',
+      email: 'suresh.patil@rationsaathi.org',
+      household_id: 'HH-MUMBAI-04',
+      family_count: 4,
+    };
+
+    // Load active user from localStorage if saved
+    try {
+      const savedUser = localStorage.getItem('rationsaathi_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+      }
+    } catch (e) {
+      console.warn('Could not read user from localStorage', e);
+    }
+
+    function updateUserInfoUI() {
+      const badgeText = document.getElementById('current-user-display');
+      if (badgeText) {
+        badgeText.textContent = `${currentUser.name} (${currentUser.household_id})`;
+      }
+      const hhInput = document.getElementById('household-id');
+      if (hhInput) hhInput.value = currentUser.household_id;
+      const headInput = document.getElementById('head-name');
+      if (headInput) headInput.value = currentUser.name;
+      const countInput = document.getElementById('family-count');
+      if (countInput && currentUser.family_count) countInput.value = currentUser.family_count;
+    }
+
+    function openAuthModal() {
+      document.getElementById('auth-email').value = currentUser.email || '';
+      document.getElementById('auth-name').value = currentUser.name || '';
+      document.getElementById('auth-household-id').value = currentUser.household_id || '';
+      document.getElementById('auth-family-count').value = currentUser.family_count || 4;
+      document.getElementById('auth-modal-message').innerHTML = '';
+      document.getElementById('modal-user-auth').classList.add('active');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('modal-user-auth').classList.remove('active');
+    }
+
+    async function handleUserAuthSubmit(event) {
+      event.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const name = document.getElementById('auth-name').value.trim();
+      const hhId = document.getElementById('auth-household-id').value.trim();
+      const fCount = parseInt(document.getElementById('auth-family-count').value, 10) || 4;
+
+      const msgEl = document.getElementById('auth-modal-message');
+      msgEl.innerHTML = '<div style="color: #2563eb; font-size: 13px;">Authenticating user...</div>';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: email,
+            name: name,
+            household_id: hhId,
+            family_count: fCount,
+          })
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+          currentUser = json.data;
+          try {
+            localStorage.setItem('rationsaathi_user', JSON.stringify(currentUser));
+          } catch(e) {}
+          updateUserInfoUI();
+          msgEl.innerHTML = `<div style="color: #166534; font-size: 13px; font-weight: 600;">Authenticated as ${currentUser.name}! Loading records...</div>`;
+          setTimeout(async () => {
+            closeAuthModal();
+            await fetchHouseholdLedger();
+          }, 600);
+        } else {
+          msgEl.innerHTML = `<div style="color: #dc2626; font-size: 13px;">${json.error || 'Authentication error.'}</div>`;
+        }
+      } catch (err) {
+        // Fallback local authentication if network error
+        currentUser = {
+          id: `usr_${Date.now()}`,
+          name: name || email.split('@')[0],
+          email: email,
+          household_id: hhId || 'HH-MUMBAI-04',
+          family_count: fCount,
+        };
+        try {
+          localStorage.setItem('rationsaathi_user', JSON.stringify(currentUser));
+        } catch(e) {}
+        updateUserInfoUI();
+        msgEl.innerHTML = `<div style="color: #166534; font-size: 13px;">Authenticated locally as ${currentUser.name}!</div>`;
+        setTimeout(() => {
+          closeAuthModal();
+          renderLedgerTable();
+        }, 600);
+      }
+    }
+
+    // Modal Control Functions (Fixing Modal Bug)
+    function openModal() {
+      document.getElementById('modal-airgap-violation').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-airgap-violation').classList.remove('active');
+    }
+
+    function handleBackdropClick(event) {
+      if (event.target === document.getElementById('modal-airgap-violation')) {
+        closeModal();
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+        closeAuthModal();
+      }
+    });
+
+    // Handle receipt photo upload simulation
+    function handleFileSelected(event) {
+      const file = event.target.files && event.target.files[0];
+      if (file) {
+        document.getElementById('raw-ocr-input').value = `Scanned Image: ${file.name}\nDate: 2026-10-04\nWheat: 8.00 kg`;
+        switchStep(2);
+      }
+    }
+
+    // IndexedDB setup for offline persistence
+    function initIndexedDB() {
+      return new Promise((resolve) => {
+        const req = indexedDB.open('RationSaathiBrowserDB', 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains('offline_receipts')) {
+            db.createObjectStore('offline_receipts', { keyPath: 'local_id' });
+          }
+        };
+        req.onsuccess = (e) => {
+          dbInstance = e.target.result;
+          resolve(dbInstance);
+        };
+      });
+    }
+
+    async function saveOfflineReceipt(entry) {
+      return new Promise((resolve, reject) => {
+        const tx = dbInstance.transaction('offline_receipts', 'readwrite');
+        const store = tx.objectStore('offline_receipts');
+        const req = store.put(entry);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function getPendingOfflineReceipts() {
+      return new Promise((resolve) => {
+        const tx = dbInstance.transaction('offline_receipts', 'readonly');
+        const store = tx.objectStore('offline_receipts');
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+      });
+    }
+
+    async function clearOfflineReceipts() {
+      return new Promise((resolve) => {
+        const tx = dbInstance.transaction('offline_receipts', 'readwrite');
+        const store = tx.objectStore('offline_receipts');
+        store.clear().onsuccess = () => resolve();
+      });
+    }
+
+    // Network status updates
+    function updateNetworkStatus() {
+      const el = document.getElementById('network-status');
+      if (navigator.onLine) {
+        el.textContent = '● Online Mode';
+        el.className = 'status-pill';
+        syncOfflineReceipts();
+      } else {
+        el.textContent = '○ Offline Mode (Cached)';
+        el.className = 'status-pill offline';
+      }
+    }
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+
+    async function syncOfflineReceipts() {
+      if (!dbInstance) return;
+      const pending = await getPendingOfflineReceipts();
+      if (pending.length > 0) {
+        for (const item of pending) {
+          try {
+            const res = await fetch('/api/receipts/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(item.payload)
+            });
+            if (res.ok) {
+              const json = await res.json();
+              if (json.data) {
+                ledger.push(...json.data);
+              }
+            }
+          } catch (e) {
+            console.error('Offline sync error', e);
+          }
+        }
+        await clearOfflineReceipts();
+        renderLedgerTable();
+      }
+    }
+
+    // Fetch ledger from backend server
+    async function fetchHouseholdLedger() {
+      try {
+        const hhId = document.getElementById('household-id').value || currentUser.household_id;
+        const res = await fetch(`/api/ledger?household_id=${encodeURIComponent(hhId)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data)) {
+            // Keep verified local entries, and update with server records
+            ledger = json.data;
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch server ledger:', err);
+      }
+      renderLedgerTable();
+    }
+
+    // Scheme Rules store (loaded dynamically from database /api/schemes)
+    let availableSchemeRules = [
+      { rule_id: 'NFSA-WHEAT-PHH', scheme_name: 'NFSA', item_name: 'Wheat', qty_per_member: 5, unit: 'kg' },
+      { rule_id: 'NFSA-RICE-PHH', scheme_name: 'NFSA', item_name: 'Rice', qty_per_member: 3, unit: 'kg' },
+      { rule_id: 'PMGKAY-WHEAT-AAY', scheme_name: 'PMGKAY', item_name: 'Wheat', qty_per_member: 7, unit: 'kg' },
+      { rule_id: 'PMGKAY-RICE-AAY', scheme_name: 'PMGKAY', item_name: 'Rice', qty_per_member: 5, unit: 'kg' },
+      { rule_id: 'AAY-WHEAT-SPECIAL', scheme_name: 'AAY', item_name: 'Wheat', qty_per_member: 8.75, unit: 'kg' },
+      { rule_id: 'AAY-RICE-SPECIAL', scheme_name: 'AAY', item_name: 'Rice', qty_per_member: 6.25, unit: 'kg' },
+      { rule_id: 'ANNAPURNA-WHEAT', scheme_name: 'ANNAPURNA', item_name: 'Wheat', qty_per_member: 6, unit: 'kg' },
+      { rule_id: 'ANNAPURNA-PULSES', scheme_name: 'ANNAPURNA', item_name: 'Dal/Pulses', qty_per_member: 2, unit: 'kg' },
+    ];
+
+    async function fetchDatabaseSchemes() {
+      try {
+        const res = await fetch('/api/schemes');
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data && Array.isArray(json.data) && json.data.length > 0) {
+            availableSchemeRules = json.data;
+            populateSchemeDropdown();
+          }
+        }
+      } catch (err) {
+        console.warn('Could not fetch schemes from database:', err);
+      }
+    }
+
+    function populateSchemeDropdown() {
+      const select = document.getElementById('scheme-select');
+      if (!select) return;
+
+      // Group rules by scheme
+      const schemesMap = new Map();
+      availableSchemeRules.forEach(r => {
+        // Normalize scheme group name
+        const raw = r.scheme_name || 'NFSA';
+        let key = 'NFSA';
+        if (raw.toUpperCase().includes('PMGKAY')) key = 'PMGKAY';
+        else if (raw.toUpperCase().includes('AAY') || raw.toUpperCase().includes('ANTYODAYA')) key = 'AAY';
+        else if (raw.toUpperCase().includes('ANNAPURNA')) key = 'ANNAPURNA';
+        else key = raw;
+
+        if (!schemesMap.has(key)) {
+          schemesMap.set(key, { name: r.scheme_name, items: [] });
+        }
+        schemesMap.get(key).items.push(`${r.qty_per_member} ${r.unit} ${r.item_name}`);
+      });
+
+      const currentVal = select.value || 'NFSA';
+      select.innerHTML = '';
+      schemesMap.forEach((meta, key) => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = `${meta.name} (${meta.items.join(', ')})`;
+        if (key === currentVal) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      // Update current rate display
+      updateSchemeQuotaDisplay();
+      populateCommodityDropdownForActiveScheme();
+    }
+
+    // Toggle Step 2 evidence choice mode
+    function toggleEvidenceMode(withEvidence) {
+      const uploadSection = document.getElementById('evidence-upload-section');
+      const btnWith = document.getElementById('btn-choice-with-evidence');
+      const btnSkip = document.getElementById('btn-choice-skip-evidence');
+
+      if (withEvidence) {
+        if (uploadSection) uploadSection.style.display = 'block';
+        if (btnWith) {
+          btnWith.style.border = '2px solid #2563eb';
+          btnWith.style.background = '#eff6ff';
+          btnWith.style.color = '#1e40af';
+        }
+        if (btnSkip) {
+          btnSkip.style.border = '2px solid #cbd5e1';
+          btnSkip.style.background = '#ffffff';
+          btnSkip.style.color = '#475569';
+        }
+      } else {
+        if (uploadSection) uploadSection.style.display = 'none';
+        if (btnSkip) {
+          btnSkip.style.border = '2px solid #16a34a';
+          btnSkip.style.background = '#dcfce7';
+          btnSkip.style.color = '#166534';
+        }
+        if (btnWith) {
+          btnWith.style.border = '2px solid #cbd5e1';
+          btnWith.style.background = '#ffffff';
+          btnWith.style.color = '#475569';
+        }
+        // Smoothly proceed to Step 3 so user can immediately record received items
+        switchStep(3);
+      }
+    }
+
+    // Populate Step 3 commodity dropdown based on chosen scheme
+    function populateCommodityDropdownForActiveScheme() {
+      const schemeSelect = document.getElementById('scheme-select');
+      const itemSelect = document.getElementById('verified-item-select');
+      const verifiedInput = document.getElementById('verified-item');
+      if (!itemSelect) return;
+
+      const selectedSchemeKey = schemeSelect ? schemeSelect.value : 'NFSA';
+      const activeRules = availableSchemeRules.filter(r => {
+        const s = (r.scheme_name || '').toUpperCase();
+        return s.includes(selectedSchemeKey.toUpperCase()) || selectedSchemeKey.toUpperCase().includes(s);
+      });
+
+      const uniqueItems = new Set();
+      activeRules.forEach(r => uniqueItems.add(r.item_name.trim()));
+      // Ensure Wheat is always available
+      uniqueItems.add('Wheat');
+      uniqueItems.add('Rice');
+
+      const prevSelected = itemSelect.value || (verifiedInput ? verifiedInput.value : 'Wheat');
+      itemSelect.innerHTML = '';
+
+      uniqueItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = `${item}`;
+        if (item.toLowerCase() === prevSelected.toLowerCase()) {
+          opt.selected = true;
+        }
+        itemSelect.appendChild(opt);
+      });
+
+      if (verifiedInput && !verifiedInput.value) {
+        verifiedInput.value = itemSelect.value;
+      }
+    }
+
+    function handleCommoditySelectChange() {
+      const itemSelect = document.getElementById('verified-item-select');
+      const verifiedInput = document.getElementById('verified-item');
+      if (itemSelect && verifiedInput) {
+        verifiedInput.value = itemSelect.value;
+      }
+    }
+
+    function syncCommoditySelectWithCustomInput() {
+      const itemSelect = document.getElementById('verified-item-select');
+      const verifiedInput = document.getElementById('verified-item');
+      if (!itemSelect || !verifiedInput) return;
+
+      const val = verifiedInput.value.trim().toLowerCase();
+      let matched = false;
+      for (let i = 0; i < itemSelect.options.length; i++) {
+        if (itemSelect.options[i].value.toLowerCase() === val) {
+          itemSelect.selectedIndex = i;
+          matched = true;
+          break;
+        }
+      }
+    }
+
+    function updateSchemeQuotaDisplay() {
+      const select = document.getElementById('scheme-select');
+      const selectedKey = select ? select.value : 'NFSA';
+      const matching = availableSchemeRules.filter(r => {
+        const s = (r.scheme_name || '').toUpperCase();
+        return s.includes(selectedKey.toUpperCase()) || selectedKey.toUpperCase().includes(s);
+      });
+
+      const quotaInput = document.getElementById('rule-quota');
+      if (quotaInput) {
+        if (matching.length > 0) {
+          quotaInput.value = matching.map(m => `${m.qty_per_member} ${m.unit} ${m.item_name} / member`).join(' + ');
+        } else {
+          quotaInput.value = '5.00 kg Wheat / member';
+        }
+      }
+
+      populateCommodityDropdownForActiveScheme();
+    }
+
+    function renderLedgerTable() {
+      const tbody = document.getElementById('discrepancy-tbody');
+      tbody.innerHTML = '';
+
+      const familyCount = parseInt(document.getElementById('family-count').value, 10) || 4;
+      const select = document.getElementById('scheme-select');
+      const selectedKey = select ? select.value : 'NFSA';
+
+      // Find all rules for selected scheme from database
+      const activeRules = availableSchemeRules.filter(r => {
+        const s = (r.scheme_name || '').toUpperCase();
+        return s.includes(selectedKey.toUpperCase()) || selectedKey.toUpperCase().includes(s);
+      });
+
+      // Baseline map per commodity for selected scheme
+      const commodityMap = new Map();
+
+      // Find primary wheat baseline for Step 1 summary box
+      let wheatPerMember = 5.0;
+      activeRules.forEach(r => {
+        const key = r.item_name.trim().toLowerCase();
+        const baseline = (familyCount * parseFloat(r.qty_per_member)).toFixed(2);
+        commodityMap.set(key, {
+          name: r.item_name.trim(),
+          baseline: parseFloat(baseline),
+          unit: r.unit || 'kg',
+        });
+        if (key === 'wheat') {
+          wheatPerMember = parseFloat(r.qty_per_member);
+        }
+      });
+
+      // If no wheat rule in chosen scheme, guarantee wheat is in map
+      if (!commodityMap.has('wheat')) {
+        commodityMap.set('wheat', {
+          name: 'Wheat',
+          baseline: parseFloat((familyCount * wheatPerMember).toFixed(2)),
+          unit: 'kg',
+        });
+      }
+
+      // Display baseline for Wheat in Step 1
+      const totalWheatBaseline = (familyCount * wheatPerMember).toFixed(2);
+      document.getElementById('display-expected-baseline').textContent = `${totalWheatBaseline} kg`;
+
+      // Filter verified ledger entries for current household
+      const currentHouseholdId = (document.getElementById('household-id').value || currentUser.household_id).trim();
+      const verifiedItems = ledger.filter(l => 
+        l.user_verified && 
+        (!l.household_id || l.household_id === currentHouseholdId)
+      );
+
+      // Register any other commodities present in ledger
+      for (const item of verifiedItems) {
+        const key = item.item_name.trim().toLowerCase();
+        if (!commodityMap.has(key)) {
+          commodityMap.set(key, {
+            name: item.item_name.trim(),
+            baseline: 0.00,
+            unit: item.unit || 'kg',
+          });
+        }
+      }
+
+      // Render each commodity row with mathematically exact calculation
+      commodityMap.forEach((meta, key) => {
+        const matching = verifiedItems.filter(l => l.item_name.trim().toLowerCase() === key);
+        let totalReceived = 0;
+        const refIds = [];
+
+        for (const m of matching) {
+          totalReceived += parseFloat(m.quantity_received) || 0;
+          refIds.push(m.evidence_id || m.transaction_id);
+        }
+
+        const baselineFixed = meta.baseline.toFixed(2);
+        const receivedFixed = totalReceived.toFixed(2);
+        const diff = Math.max(0, meta.baseline - totalReceived);
+        const diffFixed = diff.toFixed(2);
+
+        let status = 'FULL_DELIVERY';
+        if (diff > 0 && meta.baseline > 0) {
+          status = 'SHORTFALL';
+        } else if (meta.baseline === 0 && totalReceived > 0) {
+          status = 'FULL_DELIVERY';
+        }
+
+        const isWheat = key === 'wheat';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 600;">${meta.name}</td>
+          <td>${baselineFixed} ${meta.unit}</td>
+          <td ${isWheat ? 'id="cell-received"' : ''}>${receivedFixed} ${meta.unit}</td>
+          <td ${isWheat ? 'id="cell-shortfall"' : ''} style="font-weight: 700; color: ${diff > 0 ? '#dc2626' : '#16a34a'};">${diffFixed} ${meta.unit}</td>
+          <td><span class="badge" style="background: ${diff > 0 ? '#fee2e2' : '#dcfce7'}; color: ${diff > 0 ? '#991b1b' : '#166534'};">${status}</span></td>
+          <td>${refIds.length > 0 ? refIds.map(r => `Ref-${r}`).join(', ') : 'None'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Parse Receipt Button
+    document.getElementById('btn-parse-receipt').addEventListener('click', async () => {
+      const rawText = document.getElementById('raw-ocr-input').value;
+      try {
+        const res = await fetch('/api/receipts/parse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ raw_text: rawText })
+        });
+        const json = await res.json();
+        if (json.data && json.data.candidate_items.length > 0) {
+          const item = json.data.candidate_items[0];
+          document.getElementById('verified-item').value = item.item_name || 'Wheat';
+          syncCommoditySelectWithCustomInput();
+          document.getElementById('verified-qty').value = item.extracted_qty !== null ? item.extracted_qty : '';
+          if (json.data.extracted_date) {
+            document.getElementById('verified-date').value = json.data.extracted_date;
+          }
+          document.getElementById('user-verified-checkbox').checked = false;
+          switchStep(3);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    // Submit Receipt Button (Air-Gap Protected)
+    document.getElementById('btn-submit-receipt').addEventListener('click', async () => {
+      const isVerified = document.getElementById('user-verified-checkbox').checked;
+
+      if (!isVerified) {
+        openModal();
+        return;
+      }
+
+      const householdId = document.getElementById('household-id').value;
+      const dateReceived = document.getElementById('verified-date').value;
+      const itemName = document.getElementById('verified-item').value;
+      const qty = document.getElementById('verified-qty').value;
+
+      const payload = {
+        household_id: householdId,
+        evidence_id: `REC-${Date.now().toString().slice(-4)}`,
+        date_received: dateReceived,
+        user_verified: true,
+        items: [{
+          item_name: itemName,
+          quantity_received: qty,
+          unit: 'kg'
+        }]
+      };
+
+      if (!navigator.onLine) {
+        const localEntry = {
+          local_id: `OFFLINE-${Date.now()}`,
+          payload: payload,
+          created_at: new Date().toISOString()
+        };
+        await saveOfflineReceipt(localEntry);
+        document.getElementById('receipt-message').innerHTML = '<div class="notification success">Stored locally in IndexedDB (Offline). Will auto-sync on reconnect.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/receipts/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+          ledger.push(...json.data);
+          document.getElementById('receipt-message').innerHTML = '<div class="notification success">Committed to ledger successfully!</div>';
+          
+          // Form reset mechanics: Auto-clear checkbox, inputs, and file buffer
+          document.getElementById('user-verified-checkbox').checked = false;
+          const fileInput = document.getElementById('file-receipt');
+          if (fileInput) fileInput.value = '';
+
+          renderLedgerTable();
+        } else {
+          document.getElementById('receipt-message').innerHTML = `<div class="notification error">${json.error}</div>`;
+        }
+      } catch (e) {
+        document.getElementById('receipt-message').innerHTML = `<div class="notification error">${e.message}</div>`;
+      }
+    });
+
+    document.getElementById('family-count').addEventListener('input', renderLedgerTable);
+    
+    const schemeSelectEl = document.getElementById('scheme-select');
+    if (schemeSelectEl) {
+      schemeSelectEl.addEventListener('change', () => {
+        updateSchemeQuotaDisplay();
+        renderLedgerTable();
+      });
+    }
+
+    // Bulletproof Client-Side PDF Download & Print Handler
+    async function handleDownloadPDF() {
+      const element = document.getElementById('discrepancy-report-container');
+      if (!element) {
+        alert('Error: Report container not found.');
+        return;
+      }
+
+      // Check if html2pdf is available globally or fall back directly to print
+      if (typeof window.html2pdf !== 'undefined') {
+        const opt = {
+          margin: 0.5,
+          filename: 'RationSaathi_Report.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        window.html2pdf().set(opt).from(element).save();
+      } else {
+        // Unbreakable hackathon demo fallback: trigger browser print
+        window.print();
+      }
+    }
+
+    // Initial bootstrap
+    initIndexedDB().then(async () => {
+      updateNetworkStatus();
+      updateUserInfoUI();
+      await fetchDatabaseSchemes();
+      await fetchHouseholdLedger();
+      loadTranslations('en');
+    });
+  </script>
+</body>
+</html>
