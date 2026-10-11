@@ -2,9 +2,8 @@
 node_modules/
 package-lock.json.bak
 
-# Production build outputs
-dist/
-build/
+# Build outputs — dist/ is committed for Vercel deployment
+# build/
 .next/
 out/
 
