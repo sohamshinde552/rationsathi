@@ -3,18 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.server = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-// Load .env.local FIRST — before supabaseClient or any other module reads process.env
 dotenv_1.default.config({ path: '.env.local' });
-dotenv_1.default.config({ path: '.env' }); // fallback to .env if .env.local not present
+dotenv_1.default.config({ path: '.env' });
 const path_1 = __importDefault(require("path"));
-const express_1 = __importDefault(require("express"));
 const api_1 = require("./api");
-const PORT = process.env.PORT || 3000;
-// Serve public directory
-api_1.app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
-exports.server = api_1.app.listen(PORT, () => {
-    console.log(`[RationSaathi] Server running on http://localhost:${PORT}`);
-});
-exports.default = exports.server;
+// Serve public directory — __dirname is dist/ so go up one level
+api_1.app.use(require('express').static(path_1.default.join(__dirname, '../public')));
+// For Vercel serverless: export the app as default (no app.listen)
+// For local dev: start the server when run directly
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+    const PORT = process.env.PORT || 3000;
+    api_1.app.listen(PORT, () => {
+        console.log(`[RationSaathi] Server running on http://localhost:${PORT}`);
+    });
+}
+exports.default = api_1.app;

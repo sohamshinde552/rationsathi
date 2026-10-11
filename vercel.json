@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "builds": [
     {
       "src": "dist/server.js",
@@ -14,11 +12,7 @@
       "dest": "/dist/server.js"
     },
     {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
-    {
-      "src": "/(.*\\.(css|js|png|jpg|svg|ico|woff|woff2|ttf|json))",
+      "src": "/(.*\\.(css|js|png|jpg|svg|ico|woff2?|ttf|eot))",
       "dest": "/public/$1"
     },
     {
